@@ -30,3 +30,7 @@ class Group {
 		this.longName = Group.parseGroupName(name);
 	}
 }
+
+export {
+	Group
+}
