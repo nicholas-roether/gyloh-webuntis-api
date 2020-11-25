@@ -4,7 +4,7 @@ import { Message } from "./Message";
 
 type DayPlanInit = {
 	date: Date;
-	lastUpdate: Date;
+	lastUpdate: string;
 	affectedGroups: Group[];
 	messages: Message[];
 	entries: Entry[];
@@ -12,7 +12,7 @@ type DayPlanInit = {
 
 class DayPlan {
 	public readonly date: Date;
-	public readonly lastUpdate: Date;
+	public readonly lastUpdate: string;
 	public readonly affectedGroups: Group[];
 	public readonly messages: Message[];
 	public readonly entries: Entry[];

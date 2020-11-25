@@ -19,7 +19,7 @@ class Room {
 	}
 
 	private static get roomParseRegex(): RegExp {
-		return new RegExp(`^(${Object.keys(this.buildingNames).join("|")})(${Object.keys(this.roomNames)})?([0-9]+)?$`)
+		return new RegExp(`^(${Object.keys(this.buildingNames).join("|")})(${Object.keys(this.roomNames).join("|")})?([0-9]+)?$`)
 	}
 
 	private static parseRoom(id: string): string {
@@ -31,7 +31,7 @@ class Room {
 		const building = this.buildingNames[buildingId];
 		const room = roomId ? this.roomNames[roomId] : this.roomNames[""];
 
-		return `${building} ${room}${roomNum ? " " + roomNum : ""}`;
+		return `${building ? building + " " : ""}${room}${roomNum ? " " + roomNum : ""}`;
 	}
 
 	public readonly shortName: string;

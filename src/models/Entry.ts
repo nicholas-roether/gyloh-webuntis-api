@@ -4,7 +4,7 @@ import { Subject } from "./Subject";
 import { Substitution } from "./Substitution";
 
 type EntryInit = {
-	lesson: string;
+	lesson: number;
 	time: string;
 	groups: Group[];
 	readonly subject: Subject;
@@ -17,7 +17,7 @@ type EntryInit = {
 };
 
 class Entry {
-	public readonly lesson: string;
+	public readonly lesson: number;
 	public readonly time: string;
 	public readonly groups: Group[];
 	public readonly subject: Subject;
