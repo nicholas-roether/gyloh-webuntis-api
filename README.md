@@ -16,8 +16,8 @@ digital plans, and usually no more than one day in the future.
 If you try to get a plan that does not exist, this function will throw a `GylohWebUntisPlanNotFoundError`.
 
 ```js
-const gwu = require("gyloh-webuntis-api");
+const { GylohWebUntis } = require("gyloh-webuntis-api");
 
 // Getting the substitution plan of today
-const plan = gwu.getPlan(new Date());
+const plan = GylohWebUntis.getPlan(new Date());
 ```

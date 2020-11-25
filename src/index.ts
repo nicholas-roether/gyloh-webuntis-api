@@ -8,4 +8,17 @@ import { Subject } from "./models/Subject";
 import { Substitution } from "./models/Substitution";
 import { SubstitutionPlan } from "./models/SubstitutionPlan";
 
-export default GylohWebUntis;
+export {
+	GylohWebUntis,
+	Entry,
+	Group,
+	Message,
+	Room,
+	Subject,
+	Substitution,
+	SubstitutionPlan,
+	WebUntisError,
+	WebUntisCommunicationError,
+	GylohWebUntisParsingError,
+	GylohWebUntisPlanNotFoundError
+}
