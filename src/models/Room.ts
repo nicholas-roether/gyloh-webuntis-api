@@ -13,7 +13,7 @@ class Room {
 		"Phy": "Physikraum",
 		"Bio": "Biologieraum",
 		"Info": "Computerraum",
-		"Ku": "Kunst",
+		"Ku": "Kunstraum",
 		"Rapp": "Rappelkiste",
 		// TODO complete
 	}
