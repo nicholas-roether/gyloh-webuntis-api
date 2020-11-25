@@ -1,3 +1,15 @@
+import { Entry } from "./Entry";
+import { Group } from "./Group";
+import { Message } from "./Message";
+
+type DayPlanInit = {
+	date: Date;
+	lastUpdate: Date;
+	affectedGroups: Group[];
+	messages: Message[];
+	entries: Entry[];
+};
+
 class DayPlan {
 	public readonly date: Date;
 	public readonly lastUpdate: Date;
@@ -5,7 +17,7 @@ class DayPlan {
 	public readonly messages: Message[];
 	public readonly entries: Entry[];
 
-	constructor(init: DayPlan) {
+	constructor(init: DayPlanInit) {
 		this.date = init.date;
 		this.lastUpdate = init.lastUpdate;
 		this.affectedGroups = init.affectedGroups;
@@ -21,4 +33,8 @@ class DayPlan {
 		if(!this.isAffected(group)) return [];
 		return this.entries.filter(e => e.affects(group));
 	}
+}
+
+export {
+	DayPlan
 }
