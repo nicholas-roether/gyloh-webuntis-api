@@ -1,24 +1,38 @@
+import { Group } from "./Group";
+import { Room } from "./Room";
+import { Subject } from "./Subject";
+import { Substitution } from "./Substitution";
+
+type EntryInit = {
+	lesson: string;
+	time: string;
+	groups: Group[];
+	readonly subject: Subject;
+	rooms: (Room | Substitution<Room>)[];
+	substRoom?: Room;
+	teacher: string | Substitution<string>;
+	substTeacher?: string;
+	info: string;
+	message: string;
+};
+
 class Entry {
 	public readonly lesson: string;
 	public readonly time: string;
 	public readonly groups: Group[];
 	public readonly subject: Subject;
-	public readonly room: Room;
-	public readonly substRoom?: Room; // The room which is being substituted for, if applicable
-	public readonly teacher: string;
-	public readonly substTeacher?: string; // The Teacher who is being substituted for, if applicable
+	public readonly rooms: (Room | Substitution<Room>)[]
+	public readonly teacher: string | Substitution<string>;
 	public readonly info: string;
 	public readonly message: string;
 
-	constructor(init: Entry) {
+	constructor(init: EntryInit) {
 		this.lesson = init.lesson;
 		this.time = init.time;
 		this.groups = init.groups;
 		this.subject = init.subject;
-		this.room = init.room;
-		this.substRoom = init.substRoom;
+		this.rooms = init.rooms;
 		this.teacher = init.teacher;
-		this.substTeacher = init.substTeacher;
 		this.info = init.info;
 		this.message = init.message;
 	}
@@ -26,4 +40,9 @@ class Entry {
 	public affects(group: Group): boolean {
 		return this.groups.includes(group);
 	}
+}
+
+export {
+	Entry,
+	EntryInit
 }
