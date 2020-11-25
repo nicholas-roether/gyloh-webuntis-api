@@ -1,3 +1,6 @@
+/**
+ * Represents a physical room in the school that lessons take place in
+ */
 class Room {
 	private static readonly buildingNames: {[key: string]: string} = {
 		"F": "Forum",
@@ -34,14 +37,29 @@ class Room {
 		return `${building ? building + " " : ""}${room}${roomNum ? " " + roomNum : ""}`;
 	}
 
+	/**
+	 * A short name that describes this room. This can be pretty cryptic if not familiar.
+	 * 
+	 * Examples include `"BSp3"` and `"L101"`.
+	 */
 	public readonly shortName: string;
 
+	/**
+	 * A long, descriptive name for the room. Might be a bit long for some purposes.
+	 * 
+	 * Examples include `"Sporthalle 3"` and `"Lichhof Raum 101"`.
+	 */
 	public get longName(): string {
 		return Room.parseRoom(this.shortName);
 	}
 
-	constructor(id: string) {
-		this.shortName = id;
+	/**
+	 * @param shortName The short name of the room.
+	 * 
+	 * @see `Room.shortName`
+	 */
+	constructor(shortName: string) {
+		this.shortName = shortName;
 	}
 }
 

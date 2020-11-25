@@ -1,3 +1,6 @@
+/**
+ * Represents a group of students, such as a profile or a class.
+ */
 class Group {
 	private static readonly profiles: {[key: string]: string} = {
 		"Nat": "NuT-Profil",
@@ -24,12 +27,27 @@ class Group {
 		return `${semester} ${profile}${number ? " " + number : ""}`;
 	}
 
+	/**
+	 * A short name that describes the course, but can be pretty cryptic if not familiar.
+	 * 
+	 * Examples include `"S1/2_LeD 2"`.
+	 */
 	public readonly shortName: string;
 
+	/**
+	 * A long, descriptive name for the course. Might be a bit long for some purposes.
+	 * 
+	 * Examples include `"S1/2 Geschichtsprofil 2"`.
+	 */
 	public get longName(): string {
 		return Group.parseGroupName(this.shortName);
 	}
 
+	/**
+	 * @param name The short name of the group.
+	 * 
+	 * @see `Group.shortName`
+	 */
 	constructor(name: string) {
 		this.shortName = name;
 	}

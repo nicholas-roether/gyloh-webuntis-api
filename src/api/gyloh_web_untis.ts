@@ -9,6 +9,15 @@ import { Subject } from "../models/Subject";
 import { Substitution } from "../models/Substitution";
 import { WebUntis } from "./webuntis";
 
+/**
+ * This error occurs if there was a problem parsing the data recieved from UntisWeb.
+ * 
+ * This probably happened for one of two reasons:
+ * 1. WebUntis changed the way data is presented in their API
+ * 2. There is a bug in my parsing code that I didn't manage to find
+ * 
+ * In both cases this API needs to be updated. Please post an issue on GitHub if this error ever gets thrown.
+ */
 class GylohWebUntisParsingError extends Error {
 	constructor(e: any) {
 		super(
@@ -17,7 +26,13 @@ class GylohWebUntisParsingError extends Error {
 	}
 }
 
+/**
+ * This error occurs if you try to get the `SubstitutionPlan` for a day for which none exists using `GylohWebUntis.getPlan()`
+ */
 class GylohWebUntisPlanNotFoundError extends Error {
+	/**
+	 * The date for which the program attempted to find a plan
+	 */
 	public readonly date: Date;
 
 	constructor(date: Date) {
@@ -30,7 +45,14 @@ class _GylohWebUntis {
 	private static formatName = "Vertretung Netz";
 	private static schoolName = "hh5847";
 	private static webUntis = new WebUntis();
-
+	
+	/** 
+	 * Gets a `SubstitutionPlan` object asyncronously for a certain day.
+	 * 
+	 * @param day The day of which to get the substitution plan
+	 * 
+	 * @throws `GylohWebUntisPlanNotFoundError` if no plan is available for the given day.
+	 */
 	public async getPlan(day: Date): Promise<SubstitutionPlan> {
 		const response = await _GylohWebUntis.webUntis.getSubstitution(_GylohWebUntis.formatName, _GylohWebUntis.schoolName, day);
 		if(response.hasError) throw response.error;
@@ -48,10 +70,6 @@ class _GylohWebUntis {
 
 	private static parseText(str: string): string {
 		return he.decode(str);
-	}
-
-	private static parseNumber(str: string): number {
-		return Number.parseInt(this.parseText(str));
 	}
 
 	private static parseDate(dateStr: string): Date {
@@ -105,7 +123,7 @@ class _GylohWebUntis {
 
 	private static parseEntry(row: any): Entry {
 		return new Entry({
-			lesson: this.parseNumber(row.data[0]),
+			lesson: this.parseText(row.data[0]),
 			time: this.parseText(row.data[1]),
 			groups: this.parseGroups(row.data[2].split(", ")),
 			subject: this.parseSubject(row.data[3]),
@@ -145,6 +163,9 @@ class _GylohWebUntis {
 
 }
 
+/**
+ * The entry point for the gyloh-web-untis API.
+ */
 const GylohWebUntis = new _GylohWebUntis();
 
 export {

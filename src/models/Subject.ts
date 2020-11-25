@@ -1,3 +1,6 @@
+/**
+ * Represents a subject or course.
+ */
 class Subject {
 	private static readonly subjectNames: {[key: string]: string} = {
 		"D": "Deutsch",
@@ -35,12 +38,27 @@ class Subject {
 		return `${subjectName}${courseTypeKey ? " " + this.courseTypes[courseTypeKey] : ""}${courseNumber ? " " + courseNumber : ""}`;
 	}
 
+	/**
+	 * A short name that describes this subject. Might sometimes be a bit ambiguous.
+	 * 
+	 * Examples include `"Ch"` and `"Deg1"`.
+	 */
 	public readonly shortName: string;
 
+	/**
+	 * A long, descriptive name for the subject. Might be a bit long for some purposes.
+	 * 
+	 * Examples include `"Chemie"` and `"Deutsch Grundkurs 1"`.
+	 */
 	public get longName(): string {
 		return Subject.parseSubject(this.shortName);
 	}
 
+	/**
+	 * @param name The short name of the subject.
+	 * 
+	 * @see `Subject.shortName`
+	 */
 	constructor(name: string) {
 		this.shortName = name;
 	}
