@@ -2,11 +2,13 @@
   "name": "gyloh-webuntis-api",
   "version": "0.1.0",
   "description": "A NodeJS wrapper around the inofficial (?) WebUntis API on stundenplan.hamburg.net, currently specifically for the Gymnasium Lohbrügge, but can probably be adapted for others as well",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "files" : ["dist/*"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prestart": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "prepublish": "tsc"
   },
   "repository": "git+https://github.com/nicholas-roether/node-hamburg-webuntis-api.git",
   "keywords": [
