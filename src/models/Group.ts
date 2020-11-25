@@ -25,11 +25,13 @@ class Group {
 	}
 
 	public readonly shortName: string;
-	public readonly longName: string;
+
+	public get longName(): string {
+		return Group.parseGroupName(this.shortName);
+	}
 
 	constructor(name: string) {
 		this.shortName = name;
-		this.longName = Group.parseGroupName(name);
 	}
 }
 

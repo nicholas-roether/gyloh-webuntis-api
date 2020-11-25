@@ -12,11 +12,13 @@ class Subject {
 	}
 
 	public readonly shortName: string;
-	public readonly longName: string;
+
+	public get longName(): string {
+		return Subject.parseSubject(this.shortName);
+	}
 
 	constructor(name: string) {
 		this.shortName = name;
-		this.longName = Subject.parseSubject(name);
 	}
 }
 

@@ -35,11 +35,13 @@ class Room {
 	}
 
 	public readonly shortName: string;
-	public readonly longName: string;
+
+	public get longName(): string {
+		return Room.parseRoom(this.shortName);
+	}
 
 	constructor(id: string) {
 		this.shortName = id;
-		this.longName = Room.parseRoom(id);
 	}
 }
 
