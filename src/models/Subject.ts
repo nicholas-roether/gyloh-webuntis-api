@@ -19,3 +19,7 @@ class Subject {
 		this.longName = Subject.parseSubject(name);
 	}
 }
+
+export {
+	Subject
+}

@@ -7,3 +7,7 @@ class Message {
 		this.body = body;
 	}
 }
+
+export {
+	Message
+}

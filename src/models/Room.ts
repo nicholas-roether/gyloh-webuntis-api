@@ -42,3 +42,7 @@ class Room {
 		this.longName = Room.parseRoom(id);
 	}
 }
+
+export {
+	Room
+}
