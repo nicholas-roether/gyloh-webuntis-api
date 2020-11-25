@@ -1,0 +1,35 @@
+{
+  "name": "hamburg-webuntis-api",
+  "version": "0.0.1",
+  "description": "A NodeJS wrapper around the inofficial (?) WebUntis API on stundenplan.hamburg.net ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "git+https://github.com/nicholas-roether/node-hamburg-webuntis-api.git",
+  "keywords": [
+    "hamburg",
+    "stundenplan",
+    "gyloh",
+    "gymnasium",
+    "lohbrügge",
+    "webuntis",
+    "untis",
+    "untis",
+    "hamburg",
+    "untis",
+    "gyloh"
+  ],
+  "author": "Nicholas Roether",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nicholas-roether/node-hamburg-webuntis-api/issues"
+  },
+  "homepage": "https://github.com/nicholas-roether/node-hamburg-webuntis-api#readme",
+  "private": false,
+  "dependencies": {},
+  "devDependencies": {
+    "tslint": "^6.1.3",
+    "typescript": "^4.1.2"
+  }
+}
