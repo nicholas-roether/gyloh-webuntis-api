@@ -1,5 +1,25 @@
-import { GylohWebUntis } from "./api/gyloh_web_untis";
+import { GylohWebUntis, GylohWebUntisParsingError, GylohWebUntisPlanNotFoundError } from "./api/gyloh_web_untis";
+import { WebUntisCommunicationError, WebUntisError } from "./api/webuntis";
+import { Entry } from "./models/Entry";
+import { Group } from "./models/Group";
+import { Message } from "./models/Message";
+import { Room } from "./models/Room";
+import { Subject } from "./models/Subject";
+import { Substitution } from "./models/Substitution";
+import { SubstitutionPlan } from "./models/SubstitutionPlan";
 
-GylohWebUntis.getPlan(new Date(Date.parse("2020-11-26"))).then(res => console.log(res));
+export default GylohWebUntis;
 
-setTimeout(() => null, 100000000);
+export {
+	Entry,
+	Group,
+	Message,
+	Room,
+	Subject,
+	Substitution,
+	SubstitutionPlan,
+	WebUntisError,
+	WebUntisCommunicationError,
+	GylohWebUntisParsingError,
+	GylohWebUntisPlanNotFoundError
+}
