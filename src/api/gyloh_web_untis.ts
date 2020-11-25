@@ -1,20 +1,28 @@
 import he from "he";
 
-import { DayPlan } from "../models/DayPlan";
+import { DayPlan } from "../models/SubstitutionPlan";
 import { Entry } from "../models/Entry";
 import { Group } from "../models/Group";
 import { Message } from "../models/Message";
 import { Room } from "../models/Room";
 import { Subject } from "../models/Subject";
 import { Substitution } from "../models/Substitution";
-import { WebUntis } from "../webuntis";
+import { WebUntis } from "./webuntis";
 
 class GylohWebUntisParsingError extends Error {
-	constructor() {
+	constructor(e: any) {
 		super(
-			"An error occurred parsing the webuntis data. This is likely due to a problem with this library, or due to it being outdated. " +
-			"Try updating the package, and post an issue on github if that doesn't help."
+			"An error occurred parsing the webuntis data: " + e
 		);
+	}
+}
+
+class GylohWebUntisPlanNotFoundError extends Error {
+	public readonly date: Date;
+
+	constructor(date: Date) {
+		super(`The plan for ${date.toDateString()} does not exist or could not be found.`);
+		this.date = date;
 	}
 }
 
@@ -27,7 +35,15 @@ class _GylohWebUntis {
 		const response = await _GylohWebUntis.webUntis.getSubstitution(_GylohWebUntis.formatName, _GylohWebUntis.schoolName, day);
 		if(response.hasError) throw response.error;
 		const data = response.payload;
-		return _GylohWebUntis.parseDayPlan(data);
+		let plan;
+		try {
+			plan = _GylohWebUntis.parseDayPlan(data);
+		} catch(e) {
+			throw new GylohWebUntisParsingError(e);
+		}
+		if(plan.date.toDateString() != day.toDateString()) 
+			throw new GylohWebUntisPlanNotFoundError(day);
+		return plan;
 	}
 
 	private static parseText(str: string): string {
