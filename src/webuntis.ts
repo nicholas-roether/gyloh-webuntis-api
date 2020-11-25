@@ -100,12 +100,11 @@ class WebUntis {
 		});
 	}
 
-	public async getSubstitution(formatName: string, schoolName: string, date: Date, numberOfDays: number): Promise<WebUntisResponse> {
+	public async getSubstitution(formatName: string, schoolName: string, date: Date): Promise<WebUntisResponse> {
 		return this.request("substitution/data", schoolName, {
 			schoolName,
 			formatName,
 			date: this.formatDate(date),
-			numberOfDays,
 			mergeBlocks: true,
 			showOnlyFutureSub: true,
 			showTeacher: true,
