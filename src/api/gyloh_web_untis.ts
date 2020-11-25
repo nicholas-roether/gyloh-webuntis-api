@@ -1,6 +1,6 @@
 import he from "he";
 
-import { DayPlan } from "../models/SubstitutionPlan";
+import { SubstitutionPlan } from "../models/SubstitutionPlan";
 import { Entry } from "../models/Entry";
 import { Group } from "../models/Group";
 import { Message } from "../models/Message";
@@ -31,7 +31,7 @@ class _GylohWebUntis {
 	private static schoolName = "hh5847";
 	private static webUntis = new WebUntis();
 
-	public async getPlan(day: Date): Promise<DayPlan> {
+	public async getPlan(day: Date): Promise<SubstitutionPlan> {
 		const response = await _GylohWebUntis.webUntis.getSubstitution(_GylohWebUntis.formatName, _GylohWebUntis.schoolName, day);
 		if(response.hasError) throw response.error;
 		const data = response.payload;
@@ -133,8 +133,8 @@ class _GylohWebUntis {
 		return msgStrings.map(m => this.parseMessage(m));
 	}
 
-	private static parseDayPlan(data: any): DayPlan {
-		return new DayPlan({
+	private static parseDayPlan(data: any): SubstitutionPlan {
+		return new SubstitutionPlan({
 			date: this.parseDate(data.date.toString()),
 			lastUpdate: this.parseText(data.lastUpdate),
 			affectedGroups: this.parseGroups(data.affectedElements["1"]),
@@ -149,5 +149,6 @@ const GylohWebUntis = new _GylohWebUntis();
 
 export {
 	GylohWebUntis,
-	GylohWebUntisParsingError
+	GylohWebUntisParsingError,
+	GylohWebUntisPlanNotFoundError
 }

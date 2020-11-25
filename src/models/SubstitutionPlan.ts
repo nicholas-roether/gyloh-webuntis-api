@@ -36,5 +36,5 @@ class SubstitutionPlan {
 }
 
 export {
-	SubstitutionPlan as DayPlan
+	SubstitutionPlan,
 }
