@@ -106,7 +106,6 @@ class WebUntis {
 			formatName,
 			date: this.formatDate(date),
 			mergeBlocks: true,
-			showOnlyFutureSub: true,
 			showTeacher: true,
 			showClass: true,
 			showHour: true,

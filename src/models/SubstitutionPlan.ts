@@ -2,7 +2,7 @@ import { Entry } from "./Entry";
 import { Group } from "./Group";
 import { Message } from "./Message";
 
-type DayPlanInit = {
+type SubstitutionPlanInit = {
 	date: Date;
 	lastUpdate: string;
 	affectedGroups: Group[];
@@ -10,14 +10,14 @@ type DayPlanInit = {
 	entries: Entry[];
 };
 
-class DayPlan {
+class SubstitutionPlan {
 	public readonly date: Date;
 	public readonly lastUpdate: string;
 	public readonly affectedGroups: Group[];
 	public readonly messages: Message[];
 	public readonly entries: Entry[];
 
-	constructor(init: DayPlanInit) {
+	constructor(init: SubstitutionPlanInit) {
 		this.date = init.date;
 		this.lastUpdate = init.lastUpdate;
 		this.affectedGroups = init.affectedGroups;
@@ -36,5 +36,5 @@ class DayPlan {
 }
 
 export {
-	DayPlan
+	SubstitutionPlan as DayPlan
 }
