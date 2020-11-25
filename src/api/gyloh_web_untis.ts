@@ -40,7 +40,7 @@ class _GylohWebUntis {
 
 	private static parseDate(dateStr: string): Date {
 		dateStr = this.parseText(dateStr);
-		const isoStr = [dateStr.substr(0, 4), dateStr.substr(3, 2), dateStr.substr(5, 2)].join("-");
+		const isoStr = [dateStr.substr(0, 4), dateStr.substr(4, 2), dateStr.substr(6, 2)].join("-");
 		return new Date(Date.parse(isoStr));
 	}
 
