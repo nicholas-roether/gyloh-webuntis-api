@@ -49,11 +49,12 @@ class _GylohWebUntis {
 	/** 
 	 * Gets a `SubstitutionPlan` object asyncronously for a certain day.
 	 * 
-	 * @param day The day of which to get the substitution plan
+	 * @param day The day of which to get the substitution plan, in the form of a Date or a timestamp.
 	 * 
 	 * @throws `GylohWebUntisPlanNotFoundError` if no plan is available for the given day.
 	 */
-	public async getPlan(day: Date): Promise<SubstitutionPlan> {
+	public async getPlan(day: Date | number): Promise<SubstitutionPlan> {
+		if(typeof day == "number") day = new Date(day);
 		const response = await _GylohWebUntis.webUntis.getSubstitution(_GylohWebUntis.formatName, _GylohWebUntis.schoolName, day);
 		if(response.hasError) throw response.error;
 		const data = response.payload;
@@ -66,6 +67,20 @@ class _GylohWebUntis {
 		if(plan.date.toDateString() != day.toDateString()) 
 			throw new GylohWebUntisPlanNotFoundError(day);
 		return plan;
+	}
+
+	/**
+	 * Gets today's `SubstitutionPlan` object asynchronously.
+	 */
+	public getTodaysPlan(): Promise<SubstitutionPlan> {
+		return this.getPlan(Date.now());
+	}
+
+	/**
+	 * Gets tomorrows `SubstitutionPlan` object asynchronously.
+	 */
+	public getTomorrowsPlan(): Promise<SubstitutionPlan> {
+		return this.getPlan(Date.now() + 86400000);
 	}
 
 	private static parseText(str: string): string {
