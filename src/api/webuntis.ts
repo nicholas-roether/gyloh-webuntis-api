@@ -1,4 +1,4 @@
-import fetch from "node-fetch"
+import nodeFetch from "node-fetch"
 import { RequestInit } from "node-fetch";
 
 class WebUntisCommunicationError extends Error {
@@ -69,7 +69,7 @@ class WebUntis {
 		let resBody;
 
 		try {
-			resBody = await fetch(
+			resBody = await nodeFetch(
 				WebUntis.API_BASE + `${apiPath}?school=${schoolName}`,
 				this.requestData(requestBody)
 			).then(res => res.json());
