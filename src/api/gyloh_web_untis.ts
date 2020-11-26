@@ -42,69 +42,78 @@ class GylohWebUntisPlanNotFoundError extends Error {
 }
 
 class _GylohWebUntis {
-	private static formatName = "Vertretung Netz";
-	private static schoolName = "hh5847";
-	private static webUntis = new WebUntis();
+	private formatName = "Vertretung Netz";
+	private schoolName = "hh5847";
+	private webUntis = new WebUntis();
 	
 	/** 
-	 * Gets a `SubstitutionPlan` object asyncronously for a certain day.
+	 * Gets a `SubstitutionPlan` object asyncronously for a specific day.
+	 * 
+	 * Returns null if none exists for that day, such as weekends or during holidays.
+	 * Might return empty tables when no entries have been made yet.
 	 * 
 	 * @param day The day of which to get the substitution plan, in the form of a Date or a timestamp.
-	 * 
-	 * @throws `GylohWebUntisPlanNotFoundError` if no plan is available for the given day.
 	 */
-	public async getPlan(day: Date | number): Promise<SubstitutionPlan> {
+	public async getPlan(day: Date | number): Promise<SubstitutionPlan | null> {
 		if(typeof day == "number") day = new Date(day);
-		const response = await _GylohWebUntis.webUntis.getSubstitution(_GylohWebUntis.formatName, _GylohWebUntis.schoolName, day);
-		if(response.hasError) throw response.error;
-		const data = response.payload;
-		let plan;
-		try {
-			plan = _GylohWebUntis.parseDayPlan(data);
-		} catch(e) {
-			throw new GylohWebUntisParsingError(e);
-		}
-		if(plan.date.toDateString() != day.toDateString()) 
-			throw new GylohWebUntisPlanNotFoundError(day);
+		const plan = (await this.requestPlans(day, 1))[0];
+		if(plan.date.toDateString() != day.toDateString()) return null;
 		return plan;
 	}
 
 	/**
-	 * Gets today's `SubstitutionPlan` object asynchronously.
+	 * Gets the currently relevant plans; This usually means either today's plan or the plan of the next school day,
+	 * plus an arbitrary number of plans in the future.
+	 * 
+	 * @param num how many plans to get. The default is two.
 	 */
-	public getTodaysPlan(): Promise<SubstitutionPlan> {
-		return this.getPlan(Date.now());
+	public getCurrentPlans(num: number = 2) : Promise<SubstitutionPlan[]> {
+		return this.requestPlans(new Date(), num);
 	}
 
-	/**
-	 * Gets tomorrows `SubstitutionPlan` object asynchronously.
-	 */
-	public getTomorrowsPlan(): Promise<SubstitutionPlan> {
-		return this.getPlan(Date.now() + 86400000);
+	private async requestPlans(day: Date, num: number): Promise<SubstitutionPlan[]> {
+		const response = await this.webUntis.getSubstitution(
+			this.formatName, 
+			this.schoolName, 
+			day,
+			num
+		);
+		if(response.hasError) throw response.error;
+		let plans: SubstitutionPlan[] = [];
+		for(let payload of response.payloads) {
+			let plan;
+			try {
+				plan = this.parseDayPlan(payload);
+			} catch(e) {
+				throw new GylohWebUntisParsingError(e);
+			}
+			plans.push(plan);
+		}
+		return plans;
 	}
 
-	private static parseText(str: string): string {
+	private parseText(str: string): string {
 		return he.decode(str);
 	}
 
-	private static parseDate(dateStr: string): Date {
+	private parseDate(dateStr: string): Date {
 		dateStr = this.parseText(dateStr);
 		const isoStr = [dateStr.substr(0, 4), dateStr.substr(4, 2), dateStr.substr(6, 2)].join("-");
 		return new Date(Date.parse(isoStr));
 	}
 
-	private static parseMessage(data: any): Message {
+	private parseMessage(data: any): Message {
 		return new Message(this.parseText(data.subject), this.parseText(data.body));
 	}
 
-	// private static readonly substitutionRegex = /^<span class="substMonitorSubstElem">(.+)<\/span> \(<span class="cancelStyle">(.+)<\/span>\)$/
-	private static readonly substitutionRegex = /^<span class="substMonitorSubstElem">(.+)<\/span> \((.+)\)$/
+	// private readonly substitutionRegex = /^<span class="substMonitorSubstElem">(.+)<\/span> \(<span class="cancelStyle">(.+)<\/span>\)$/
+	private readonly substitutionRegex = /^<span class="substMonitorSubstElem">(.+)<\/span> \((.+)\)$/
 
-	private static isSubstitution(str: string) {
+	private isSubstitution(str: string) {
 		return this.substitutionRegex.test(str);
 	}
 
-	private static splitSubstitution(str: string): Substitution<string> {
+	private splitSubstitution(str: string): Substitution<string> {
 		const res = this.substitutionRegex.exec(str);
 		if(res == null) return {current: str};
 		return {
@@ -113,7 +122,7 @@ class _GylohWebUntis {
 		}
 	}
 
-	private static parseRooms(str: string): (Room | Substitution<Room>)[] {
+	private parseRooms(str: string): (Room | Substitution<Room>)[] {
 		const roomStrs = this.parseText(str).split(", ");
 		const rooms = roomStrs.map(str => {
 			if(!this.isSubstitution(str)) return new Room(str);
@@ -127,16 +136,16 @@ class _GylohWebUntis {
 		return rooms;
 	}
 
-	private static parseTeacher(str: string): (string | Substitution<string>) {
+	private parseTeacher(str: string): (string | Substitution<string>) {
 		if(!this.isSubstitution(str)) return str;
 		return this.splitSubstitution(str);
 	}
 
-	private static parseSubject(str: string): Subject {
+	private parseSubject(str: string): Subject {
 		return new Subject(this.parseText(str));
 	}
 
-	private static parseEntry(row: any): Entry {
+	private parseEntry(row: any): Entry {
 		return new Entry({
 			lesson: this.parseText(row.data[0]),
 			time: this.parseText(row.data[1]),
@@ -149,7 +158,7 @@ class _GylohWebUntis {
 		});
 	}
 
-	private static parseEntries(rows: any[]) {
+	private parseEntries(rows: any[]) {
 		const entries = rows.map(r => this.parseEntry(r));
 		const uniqueEntries: Entry[] = [];
 		entries.forEach(e => {
@@ -158,15 +167,15 @@ class _GylohWebUntis {
 		return uniqueEntries;
 	}
 
-	private static parseGroups(gStrings: string[]) {
+	private parseGroups(gStrings: string[]) {
 		return gStrings.map(g => new Group(this.parseText(g)));
 	}
 
-	private static parseMessages(msgStrings: any[]) {
+	private parseMessages(msgStrings: any[]) {
 		return msgStrings.map(m => this.parseMessage(m));
 	}
 
-	private static parseDayPlan(data: any): SubstitutionPlan {
+	private parseDayPlan(data: any): SubstitutionPlan {
 		return new SubstitutionPlan({
 			date: this.parseDate(data.date.toString()),
 			lastUpdate: this.parseText(data.lastUpdate),
