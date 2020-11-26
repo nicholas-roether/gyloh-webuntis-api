@@ -1,4 +1,4 @@
-import { GylohWebUntis, GylohWebUntisParsingError, GylohWebUntisPlanNotFoundError } from "./api/gyloh_web_untis";
+import { GylohWebUntis, GylohWebUntisParsingError } from "./api/gyloh_web_untis";
 import { WebUntisCommunicationError, WebUntisError } from "./api/webuntis";
 import { Entry } from "./models/Entry";
 import { Group } from "./models/Group";
@@ -19,6 +19,5 @@ export {
 	SubstitutionPlan,
 	WebUntisError,
 	WebUntisCommunicationError,
-	GylohWebUntisParsingError,
-	GylohWebUntisPlanNotFoundError
+	GylohWebUntisParsingError
 }

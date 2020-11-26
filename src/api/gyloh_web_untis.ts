@@ -26,21 +26,6 @@ class GylohWebUntisParsingError extends Error {
 	}
 }
 
-/**
- * This error occurs if you try to get the `SubstitutionPlan` for a day for which none exists using `GylohWebUntis.getPlan()`
- */
-class GylohWebUntisPlanNotFoundError extends Error {
-	/**
-	 * The date for which the program attempted to find a plan
-	 */
-	public readonly date: Date;
-
-	constructor(date: Date) {
-		super(`The plan for ${date.toDateString()} does not exist or could not be found.`);
-		this.date = date;
-	}
-}
-
 class _GylohWebUntis {
 	private formatName = "Vertretung Netz";
 	private schoolName = "hh5847";
@@ -195,5 +180,4 @@ const GylohWebUntis = new _GylohWebUntis();
 export {
 	GylohWebUntis,
 	GylohWebUntisParsingError,
-	GylohWebUntisPlanNotFoundError
 }
