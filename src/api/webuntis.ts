@@ -21,16 +21,16 @@ class WebUntisError extends Error {
 }
 
 class WebUntisResponse {
-	public readonly payload: any | null;
+	public readonly payloads: unknown[];
 	public readonly error: Error | null;
 
-	constructor(payload: any, error: Error | null) {
-		this.payload = payload;
+	constructor(payloads: unknown[] | null, error: Error | null) {
+		this.payloads = payloads || [];
 		this.error = error;
 	}
 
 	get hasData() {
-		return this.payload != null;
+		return this.payloads.length > 0;
 	}
 
 	get hasError() {
@@ -62,7 +62,7 @@ class WebUntis {
 			const errData = data["error"];
 			if(errData) error = new WebUntisError(errData.message, errData.data, errData.code);
 		}
-		return new WebUntisResponse(payload, error);
+		return new WebUntisResponse([payload], error);
 	}
 
 	private async request(apiPath: string, schoolName: string, requestBody: object): Promise<WebUntisResponse> {
@@ -100,32 +100,52 @@ class WebUntis {
 		});
 	}
 
-	public async getSubstitution(formatName: string, schoolName: string, date: Date): Promise<WebUntisResponse> {
-		return this.request("substitution/data", schoolName, {
-			schoolName,
-			formatName,
-			date: this.formatDate(date),
-			mergeBlocks: true,
-			showTeacher: true,
-			showClass: true,
-			showHour: true,
-			showInfo: true,
-			showRoom: true,
-			showSubject: true,
-			groupBy: 1,
-			hideAbsent: true,
-			departmentIds: [],
-			departmentElementType: -1,
-			hideCancelWithSubstitution: true,
-			showTime: true,
-			showSubstText: true,
-			showAbsentElements: [],
-			showAffectedElements: [1],
-			showUnitTime: true,
-			showMessages: true,
-			showAbsentTeacher: true,
-			showCancel: true,
-		})
+	public async getSubstitution(
+		formatName: string, 
+		schoolName: string, 
+		date: Date, 
+		num: number = 1
+	): Promise<WebUntisResponse> {
+		let error: Error | null = null;
+		let payloads: any[] = [];
+		let reqDate = this.formatDate(date);
+		for(; num > 0; num--) {
+			const response = await this.request("substitution/data", schoolName, {
+				schoolName,
+				formatName,
+				date: reqDate,
+				mergeBlocks: true,
+				showTeacher: true,
+				showClass: true,
+				showHour: true,
+				showInfo: true,
+				showRoom: true,
+				showSubject: true,
+				groupBy: 1,
+				hideAbsent: true,
+				departmentIds: [],
+				departmentElementType: -1,
+				hideCancelWithSubstitution: true,
+				showTime: true,
+				showSubstText: true,
+				showAbsentElements: [],
+				showAffectedElements: [1],
+				showUnitTime: true,
+				showMessages: true,
+				showAbsentTeacher: true,
+				showCancel: true,
+			});
+			if(response.hasError) {
+				error = response.error;
+				break;
+			}
+			if(!response.hasData) break;
+			const payload = response.payloads[0] as any;
+			payloads.push(payload);
+			if(payload.nextDate === null) break;
+			reqDate = payload.nextDate;
+		}
+		return new WebUntisResponse(payloads, error);
 	}
 }
 
