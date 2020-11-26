@@ -6,7 +6,7 @@ It's honestly so specific that I don't even know why I'm writing this readme in 
 
 ## Getting Tables
 
-Getting `TimeTable`s is done via one of three methods:
+Getting `TimeTable`s is done via one of two methods:
 - `GylohWebUntis.getCurrentTables(num)`, which gets currently relevant tables, starting either today or on the next day of school, and getting `num` tables in total. The default for `num` is 2.
 - `GylohWebUntis.getTable(day)`, which gets a table for an arbitrary `day`, which is either a `Date` object or a timestamp. It will return `null` if no table is available for that day.
 
