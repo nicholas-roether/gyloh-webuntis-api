@@ -39,9 +39,7 @@ class Class {
 	 * 
 	 * Examples include `"S1/2 Geschichtsprofil 2"`.
 	 */
-	public get longName(): string {
-		return Class.parseClassName(this.shortName);
-	}
+	public readonly longName: string;
 
 	/**
 	 * @param name The short name of the class.
@@ -50,6 +48,7 @@ class Class {
 	 */
 	constructor(name: string) {
 		this.shortName = name;
+		this.longName = Class.parseClassName(this.shortName);
 	}
 }
 

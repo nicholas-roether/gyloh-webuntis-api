@@ -50,9 +50,7 @@ class Subject {
 	 * 
 	 * Examples include `"Chemie"` and `"Deutsch Grundkurs 1"`.
 	 */
-	public get longName(): string {
-		return Subject.parseSubject(this.shortName);
-	}
+	public readonly longName: string;
 
 	/**
 	 * @param name The short name of the subject.
@@ -61,6 +59,7 @@ class Subject {
 	 */
 	constructor(name: string) {
 		this.shortName = name;
+		this.longName = Subject.parseSubject(this.shortName);
 	}
 }
 

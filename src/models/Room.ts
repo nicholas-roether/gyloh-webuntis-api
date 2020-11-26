@@ -49,9 +49,7 @@ class Room {
 	 * 
 	 * Examples include `"Sporthalle 3"` and `"Lichhof Raum 101"`.
 	 */
-	public get longName(): string {
-		return Room.parseRoom(this.shortName);
-	}
+	public readonly longName: string;
 
 	/**
 	 * @param shortName The short name of the room.
@@ -60,6 +58,7 @@ class Room {
 	 */
 	constructor(shortName: string) {
 		this.shortName = shortName;
+		this.longName = Room.parseRoom(this.shortName);
 	}
 }
 
