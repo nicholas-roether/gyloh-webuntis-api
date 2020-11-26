@@ -1,8 +1,8 @@
 import he from "he";
 
-import { SubstitutionPlan } from "../models/SubstitutionPlan";
+import { TimeTable } from "../models/TimeTable";
 import { Entry } from "../models/Entry";
-import { Group } from "../models/Group";
+import { Class } from "../models/Class";
 import { Message } from "../models/Message";
 import { Room } from "../models/Room";
 import { Subject } from "../models/Subject";
@@ -32,31 +32,31 @@ class _GylohWebUntis {
 	private webUntis = new WebUntis();
 	
 	/** 
-	 * Gets a `SubstitutionPlan` object asyncronously for a specific day.
+	 * Gets a `TimeTable` object asyncronously for a specific day.
 	 * 
 	 * Returns null if none exists for that day, such as weekends or during holidays.
 	 * Might return empty tables when no entries have been made yet.
 	 * 
-	 * @param day The day of which to get the substitution plan, in the form of a Date or a timestamp.
+	 * @param day The day of which to get the time table , in the form of a Date or a timestamp.
 	 */
-	public async getPlan(day: Date | number): Promise<SubstitutionPlan | null> {
+	public async getTable(day: Date | number): Promise<TimeTable | null> {
 		if(typeof day == "number") day = new Date(day);
-		const plan = (await this.requestPlans(day, 1))[0];
-		if(plan.date.toDateString() != day.toDateString()) return null;
-		return plan;
+		const table = (await this.requestTables(day, 1))[0];
+		if(table.date.toDateString() != day.toDateString()) return null;
+		return table;
 	}
 
 	/**
-	 * Gets the currently relevant plans; This usually means either today's plan or the plan of the next school day,
-	 * plus an arbitrary number of plans in the future.
+	 * Gets the currently relevant tables; This usually means either today's table or that of the next school day,
+	 * plus an arbitrary number of tables in the future.
 	 * 
-	 * @param num how many plans to get. The default is two.
+	 * @param num how many tables to get. The default is two.
 	 */
-	public getCurrentPlans(num: number = 2) : Promise<SubstitutionPlan[]> {
-		return this.requestPlans(new Date(), num);
+	public getCurrentTables(num: number = 2) : Promise<TimeTable[]> {
+		return this.requestTables(new Date(), num);
 	}
 
-	private async requestPlans(day: Date, num: number): Promise<SubstitutionPlan[]> {
+	private async requestTables(day: Date, num: number): Promise<TimeTable[]> {
 		const response = await this.webUntis.getSubstitution(
 			this.formatName, 
 			this.schoolName, 
@@ -64,17 +64,17 @@ class _GylohWebUntis {
 			num
 		);
 		if(response.hasError) throw response.error;
-		let plans: SubstitutionPlan[] = [];
+		let tables: TimeTable[] = [];
 		for(let payload of response.payloads) {
-			let plan;
+			let table;
 			try {
-				plan = this.parseDayPlan(payload);
+				table = this.parseTimeTable(payload);
 			} catch(e) {
 				throw new GylohWebUntisParsingError(e);
 			}
-			plans.push(plan);
+			tables.push(table);
 		}
-		return plans;
+		return tables;
 	}
 
 	private parseText(str: string): string {
@@ -91,7 +91,6 @@ class _GylohWebUntis {
 		return new Message(this.parseText(data.subject), this.parseText(data.body));
 	}
 
-	// private readonly substitutionRegex = /^<span class="substMonitorSubstElem">(.+)<\/span> \(<span class="cancelStyle">(.+)<\/span>\)$/
 	private readonly substitutionRegex = /^<span class="substMonitorSubstElem">(.+)<\/span> \((.+)\)$/
 
 	private isSubstitution(str: string) {
@@ -134,7 +133,7 @@ class _GylohWebUntis {
 		return new Entry({
 			lesson: this.parseText(row.data[0]),
 			time: this.parseText(row.data[1]),
-			groups: this.parseGroups(row.data[2].split(", ")),
+			classes: this.parseClasses(row.data[2].split(", ")),
 			subject: this.parseSubject(row.data[3]),
 			rooms: this.parseRooms(row.data[4]),
 			teacher: this.parseTeacher(row.data[5]),
@@ -152,19 +151,19 @@ class _GylohWebUntis {
 		return uniqueEntries;
 	}
 
-	private parseGroups(gStrings: string[]) {
-		return gStrings.map(g => new Group(this.parseText(g)));
+	private parseClasses(gStrings: string[]) {
+		return gStrings.map(g => new Class(this.parseText(g)));
 	}
 
 	private parseMessages(msgStrings: any[]) {
 		return msgStrings.map(m => this.parseMessage(m));
 	}
 
-	private parseDayPlan(data: any): SubstitutionPlan {
-		return new SubstitutionPlan({
+	private parseTimeTable(data: any): TimeTable {
+		return new TimeTable({
 			date: this.parseDate(data.date.toString()),
 			lastUpdate: this.parseText(data.lastUpdate),
-			affectedGroups: this.parseGroups(data.affectedElements["1"]),
+			affectedClasses: this.parseClasses(data.affectedElements["1"]),
 			messages: this.parseMessages(data.messageData.messages),
 			entries: this.parseEntries(data.rows)
 		});
