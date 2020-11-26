@@ -10,7 +10,7 @@ type EntryInit = {
 	lesson: string;
 	time: string;
 	groups: Group[];
-	readonly subject: Subject;
+	subject: Subject;
 	rooms: (Room | Substitution<Room>)[];
 	substRoom?: Room;
 	teacher: string | Substitution<string>;
