@@ -1,5 +1,5 @@
-import nodeFetch from "node-fetch"
-import { RequestInit } from "node-fetch";
+import Axios from "axios";
+import request from "request";
 
 class WebUntisCommunicationError extends Error {
 	constructor(message: string) {
@@ -65,19 +65,24 @@ class WebUntis {
 		return new WebUntisResponse([payload], error);
 	}
 
-	private async request(apiPath: string, schoolName: string, requestBody: object): Promise<WebUntisResponse> {
-		let resBody;
+	private async untisRequest(apiPath: string, schoolName: string, requestBody: object): Promise<WebUntisResponse> {
+		let error;
 
-		try {
-			resBody = await nodeFetch(
-				WebUntis.API_BASE + `${apiPath}?school=${schoolName}`,
-				this.requestData(requestBody)
-			).then(res => res.json());
-		} catch(e) {
-			return new WebUntisResponse(null, e);
-		}
+		const json = JSON.stringify(requestBody);
+		const body = await Axios.post(
+			WebUntis.API_BASE + `${apiPath}?school=${schoolName}`,
+			json, 
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"Content-Length": `${json.length}`,
+				},
+			}
+		).then(res => res.data).catch(e => error = new WebUntisCommunicationError(e));
 
-		return this.parseResponse(resBody);
+		if(error) return new WebUntisResponse(null, error);
+		return this.parseResponse(body);
 	}
 
 	private formatDate(date: Date): number {
@@ -85,14 +90,14 @@ class WebUntis {
 	}
 
 	public async getFormat(formatName: string, schoolName: string) : Promise<WebUntisResponse> {
-		return this.request("substitution/format", schoolName, {
+		return this.untisRequest("substitution/format", schoolName, {
 			schoolName,
 			formatName
 		});
 	}
 
 	public async getTicker(formatName: string, schoolName: string, date: Date, numberOfDays: number): Promise<WebUntisResponse> {
-		return this.request("ticker/data", schoolName, {
+		return this.untisRequest("ticker/data", schoolName, {
 			schoolName,
 			formatName,
 			date: this.formatDate(date),
@@ -110,7 +115,7 @@ class WebUntis {
 		let payloads: any[] = [];
 		let reqDate = this.formatDate(date);
 		for(; num > 0; num--) {
-			const response = await this.request("substitution/data", schoolName, {
+			const response = await this.untisRequest("substitution/data", schoolName, {
 				schoolName,
 				formatName,
 				date: reqDate,
