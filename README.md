@@ -16,7 +16,7 @@ const { GylohWebUntis } = require("gyloh-webuntis-api");
 // I'll be using async/await for readability; obviously this code would need to be inside an asynchronous function
 
 // Get three currently relevant tables.
-const todaysTable = await GylohWebUntis.getCurrentTables(3);
+const currentTables = await GylohWebUntis.getCurrentTables(3);
 
 // Getting the tables for the 9th of june 2018 (if it exists)
 const arbitraryTable = await GylohWebUntis.getTable(Date.parse("2018-06-09"));
