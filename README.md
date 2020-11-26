@@ -35,8 +35,8 @@ The plan object contains all the information about the given day that this API p
 const plan = await GylohWebUntis.getTodaysPlan();
 
 plan.entries; // All the entries in this plan
-plan.affectedGroups; // fDor which groups of students this plan carries entries
-plan.messages; // Messages concerning all students for this dey
+plan.affectedGroups; // for which groups of students this plan carries entries
+plan.messages; // Messages concerning all students for this day
 ```
 
 ### The Entry Object
