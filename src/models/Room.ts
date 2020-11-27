@@ -9,7 +9,7 @@ class Room {
 	}
 
 	private static readonly roomNames: {[key: string]: string} = {
-		"": "Raum",
+		"": "",
 		"Geo": "Geografieraum",
 		"Sp": "Sporthalle",
 		"Chem": "Chemieraum",
@@ -22,7 +22,7 @@ class Room {
 	}
 
 	private static get roomParseRegex(): RegExp {
-		return new RegExp(`^(${Object.keys(this.buildingNames).join("|")})(${Object.keys(this.roomNames).join("|")})?([0-9]+)?$`)
+		return new RegExp(`^(${Object.keys(this.buildingNames).join("|")})(${Object.keys(this.roomNames).join("|")})? ?([0-9]+)?$`)
 	}
 
 	private static parseRoom(id: string): string {
@@ -47,7 +47,7 @@ class Room {
 	/**
 	 * A long, descriptive name for the room. Might be a bit long for some purposes.
 	 * 
-	 * Examples include `"Sporthalle 3"` and `"Lichhof Raum 101"`.
+	 * Examples include `"Sporthalle 3"` and `"Lichhof 101"`.
 	 */
 	public get longName(): string {
 		return Room.parseRoom(this.shortName);

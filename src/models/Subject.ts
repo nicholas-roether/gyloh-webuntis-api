@@ -6,7 +6,9 @@ class Subject {
 		"D": "Deutsch",
 		"De": "Deutsch",
 		"E": "Englisch",
+		"En": "Englisch",
 		"M": "Mathe",
+		"Ma": "Mathe",
 		"Geo": "Geografie",
 		"Phy": "Physik",
 		"Ku": "Kunst",
@@ -16,13 +18,14 @@ class Subject {
 		"Bio": "Biologie",
 		"Ch": "Chemie",
 		"Gebi": "Geschichte Bilingual",
-		"Sem": "Seminar"
+		"Sem": "Seminar",
+		"PGW": "PGW"
 		// TODO add rest
 	}
 
 	private static readonly courseTypes: {[key: string]: string} = {
-		"g": "Grundkurs",
-		"L": "Leistungskurs"
+		"g": "G",
+		"L": "L"
 	}
 
 	private static get courseRegex() {
@@ -48,7 +51,7 @@ class Subject {
 	/**
 	 * A long, descriptive name for the subject. Might be a bit long for some purposes.
 	 * 
-	 * Examples include `"Chemie"` and `"Deutsch Grundkurs 1"`.
+	 * Examples include `"Chemie"` and `"Deutsch G1"`.
 	 */
 	public get longName(): string {
 		return Subject.parseSubject(this.shortName);
