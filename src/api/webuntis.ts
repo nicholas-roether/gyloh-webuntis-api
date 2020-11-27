@@ -1,5 +1,4 @@
 import Axios from "axios";
-import request from "request";
 
 class WebUntisCommunicationError extends Error {
 	constructor(message: string) {
@@ -79,7 +78,7 @@ class WebUntis {
 					"Content-Length": `${json.length}`,
 				},
 			}
-		).then(res => res.data).catch(e => error = new WebUntisCommunicationError(e));
+		).then((res: any) => res.data).catch((e: any) => error = new WebUntisCommunicationError(e));
 
 		if(error) return new WebUntisResponse(null, error);
 		return this.parseResponse(body);
