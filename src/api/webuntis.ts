@@ -40,18 +40,6 @@ class WebUntisResponse {
 class WebUntis {
 	private static readonly API_BASE = "https://stundenplan.hamburg.de/WebUntis/monitor/";
 
-	private requestData(body: object) : RequestInit {
-		const json = JSON.stringify(body);
-		return {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"Content-Length": `${json.length}`,
-			},
-			body: json
-		}
-	}
-
 	private parseResponse(data: any): WebUntisResponse {
 		let payload: any = null;
 		let error: Error | null = null;
@@ -70,7 +58,7 @@ class WebUntis {
 		const json = JSON.stringify(requestBody);
 		const body = await Axios.post(
 			WebUntis.API_BASE + `${apiPath}?school=${schoolName}`,
-			json, 
+			json,
 			{
 				method: "POST",
 				headers: {
@@ -105,9 +93,9 @@ class WebUntis {
 	}
 
 	public async getSubstitution(
-		formatName: string, 
-		schoolName: string, 
-		date: Date, 
+		formatName: string,
+		schoolName: string,
+		date: Date,
 		num: number = 1
 	): Promise<WebUntisResponse> {
 		let error: Error | null = null;
