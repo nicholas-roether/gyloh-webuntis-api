@@ -1,24 +1,25 @@
-import { GylohWebUntis, GylohWebUntisParsingError, GylohWebUntisPlanNotFoundError } from "./api/gyloh_web_untis";
+import { GylohWebUntis, GylohWebUntisParsingError } from "./api/gyloh_web_untis";
 import { WebUntisCommunicationError, WebUntisError } from "./api/webuntis";
-import { Entry } from "./models/Entry";
-import { Group } from "./models/Group";
+import { Entry, EntryInit } from "./models/Entry";
+import { Class } from "./models/Class";
 import { Message } from "./models/Message";
 import { Room } from "./models/Room";
 import { Subject } from "./models/Subject";
 import { Substitution } from "./models/Substitution";
-import { SubstitutionPlan } from "./models/SubstitutionPlan";
+import { TimeTable, TimeTableInit } from "./models/TimeTable";
 
 export {
 	GylohWebUntis,
 	Entry,
-	Group,
+	EntryInit,
+	Class,
 	Message,
 	Room,
 	Subject,
 	Substitution,
-	SubstitutionPlan,
+	TimeTable,
+	TimeTableInit,
 	WebUntisError,
 	WebUntisCommunicationError,
-	GylohWebUntisParsingError,
-	GylohWebUntisPlanNotFoundError
+	GylohWebUntisParsingError
 }

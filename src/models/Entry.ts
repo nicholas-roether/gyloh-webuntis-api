@@ -1,28 +1,26 @@
-import { Group } from "./Group";
+import { Class } from "./Class";
 import { Room } from "./Room";
 import { Subject } from "./Subject";
 import { Substitution } from "./Substitution";
 
 /**
- * An object containing initialization properties for an `Entry`-object.
+ * An object containing initialization properties for an `Entry` object.
  */
-type EntryInit = {
+export type EntryInit = {
 	lesson: string;
 	time: string;
-	groups: Group[];
+	classes: Class[];
 	subject: Subject;
 	rooms: (Room | Substitution<Room>)[];
-	substRoom?: Room;
 	teacher: string | Substitution<string>;
-	substTeacher?: string;
 	info: string;
 	message: string;
 };
 
 /**
- * Represents one entry in the substitution plan.
+ * Represents one entry in the time table.
  * 
- * One entry might affect multiple classes or courses (`Group`s), as well as multiple lessons.
+ * One entry might affect multiple classes or courses, as well as multiple lessons.
  */
 class Entry {
 	/**
@@ -39,9 +37,9 @@ class Entry {
 	 */
 	public readonly time: string;
 	/**
-	 * A list of `Group`-objects which this entry affects.
+	 * The classes (or profiles) that this entry affects
 	 */
-	public readonly groups: Group[];
+	public readonly classes: Class[];
 	/**
 	 * Which subject is (or is normally) being taught during the lessons that this entry affects
 	 */
@@ -50,18 +48,18 @@ class Entry {
 	 * Information about the rooms in which the lessons this entry affects are taught. 
 	 * Usually this list contains only one entry. The only time it contains multiple is when one class or course is split between multiple rooms.
 	 * 
-	 * Entries in this list are either `Room`-objects, representing the room that these lessons usually take place in, and that they in fact do take place there,
-	 * or a `Substitution`-object which represents that these lessons take place in a different room than usual.
+	 * Entries in this list are either `Room` objects, in which case these lessons take place in their normal room (that being the one provided),
+	 * or a `Substitution` object which represents that these lessons take place in a different room than usual.
 	 * 
-	 * In the latter case the `Substitution`-object's `subst`-property contains the room that is being substituted for, and the `current`-property is the room that
+	 * In the latter case the `Substitution` object's `subst` property contains the room that is being substituted for, and the `current` property is the room that
 	 * the lessons actually take place in.
 	 */
 	public readonly rooms: (Room | Substitution<Room>)[]
 	/**
 	 * Information about which teacher teaches the lessons this entry affects.
 	 * 
-	 * either A short form of the teachers name as a string, or a `Substitution`-object which represents that a substitute teacher teaches this lesson.
-	 * In the latter case the `Substitution`-object's `subst`-property contains the teacher that is being substituted for, and the `current`-property is the
+	 * either A short form of the teachers name as a string, or a `Substitution` object which represents that a substitute teacher teaches this lesson.
+	 * In the latter case the `Substitution` object's `subst` property contains the teacher that is being substituted for, and the `current` property is the
 	 * substitute teacher that actually teaches this lesson
 	 */
 	public readonly teacher: string | Substitution<string>;
@@ -80,7 +78,7 @@ class Entry {
 	constructor(init: EntryInit) {
 		this.lesson = init.lesson;
 		this.time = init.time;
-		this.groups = init.groups;
+		this.classes = init.classes;
 		this.subject = init.subject;
 		this.rooms = init.rooms;
 		this.teacher = init.teacher;
@@ -89,12 +87,12 @@ class Entry {
 	}
 
 	/**
-	 * Checks if this entry affects a given group.
+	 * Checks if this entry affects a given class.
 	 * 
-	 * @param group the `Group`-object to check.
+	 * @param classToCheck the class to check.
 	 */
-	public affects(group: Group): boolean {
-		return this.groups.includes(group);
+	public affects(classToCheck: Class): boolean {
+		return this.classes.includes(classToCheck);
 	}
 }
 

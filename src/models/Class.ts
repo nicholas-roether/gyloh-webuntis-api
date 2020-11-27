@@ -1,7 +1,7 @@
 /**
- * Represents a group of students, such as a profile or a class.
+ * Represents classes, but also profiles
  */
-class Group {
+class Class {
 	private static readonly profiles: {[key: string]: string} = {
 		"Nat": "NuT-Profil",
 		"Fort": "Biologieprofil",
@@ -17,7 +17,7 @@ class Group {
 		return new RegExp(`^(S1\\/2|S3\\/4)_(${Object.keys(this.profiles).join("|")})(?: ([0-9]+))?$`);
 	}
 
-	private static parseGroupName(name: string) {
+	private static parseClassName(name: string) {
 		const res = this.profileRegex.exec(name);
 		if(!res) return name;
 		const semester = res[1];
@@ -28,31 +28,30 @@ class Group {
 	}
 
 	/**
-	 * A short name that describes the course, but can be pretty cryptic if not familiar.
+	 * A short name that describes the class, but can be pretty cryptic if not familiar.
 	 * 
 	 * Examples include `"S1/2_LeD 2"`.
 	 */
 	public readonly shortName: string;
 
 	/**
-	 * A long, descriptive name for the course. Might be a bit long for some purposes.
+	 * A long, descriptive name for the class. Might be a bit long for some purposes.
 	 * 
 	 * Examples include `"S1/2 Geschichtsprofil 2"`.
 	 */
-	public get longName(): string {
-		return Group.parseGroupName(this.shortName);
-	}
+	public readonly longName: string;
 
 	/**
-	 * @param name The short name of the group.
+	 * @param name The short name of the class.
 	 * 
-	 * @see `Group.shortName`
+	 * @see `Class.shortName`
 	 */
 	constructor(name: string) {
 		this.shortName = name;
+		this.longName = Class.parseClassName(this.shortName);
 	}
 }
 
 export {
-	Group
+	Class
 }

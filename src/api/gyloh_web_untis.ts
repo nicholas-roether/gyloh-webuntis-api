@@ -1,8 +1,8 @@
 import he from "he";
 
-import { SubstitutionPlan } from "../models/SubstitutionPlan";
+import { TimeTable } from "../models/TimeTable";
 import { Entry } from "../models/Entry";
-import { Group } from "../models/Group";
+import { Class } from "../models/Class";
 import { Message } from "../models/Message";
 import { Room } from "../models/Room";
 import { Subject } from "../models/Subject";
@@ -26,85 +26,78 @@ class GylohWebUntisParsingError extends Error {
 	}
 }
 
-/**
- * This error occurs if you try to get the `SubstitutionPlan` for a day for which none exists using `GylohWebUntis.getPlan()`
- */
-class GylohWebUntisPlanNotFoundError extends Error {
-	/**
-	 * The date for which the program attempted to find a plan
-	 */
-	public readonly date: Date;
-
-	constructor(date: Date) {
-		super(`The plan for ${date.toDateString()} does not exist or could not be found.`);
-		this.date = date;
-	}
-}
-
 class _GylohWebUntis {
-	private static formatName = "Vertretung Netz";
-	private static schoolName = "hh5847";
-	private static webUntis = new WebUntis();
+	private formatName = "Vertretung Netz";
+	private schoolName = "hh5847";
+	private webUntis = new WebUntis();
 	
 	/** 
-	 * Gets a `SubstitutionPlan` object asyncronously for a certain day.
+	 * Gets a `TimeTable` object asyncronously for a specific day.
 	 * 
-	 * @param day The day of which to get the substitution plan, in the form of a Date or a timestamp.
+	 * Returns null if none exists for that day, such as weekends or during holidays.
+	 * Might return empty tables when no entries have been made yet.
 	 * 
-	 * @throws `GylohWebUntisPlanNotFoundError` if no plan is available for the given day.
+	 * @param day The day of which to get the time table , in the form of a Date or a timestamp.
 	 */
-	public async getPlan(day: Date | number): Promise<SubstitutionPlan> {
+	public async getTable(day: Date | number): Promise<TimeTable | null> {
 		if(typeof day == "number") day = new Date(day);
-		const response = await _GylohWebUntis.webUntis.getSubstitution(_GylohWebUntis.formatName, _GylohWebUntis.schoolName, day);
+		const table = (await this.requestTables(day, 1))[0];
+		if(table.date.toDateString() != day.toDateString()) return null;
+		return table;
+	}
+
+	/**
+	 * Gets the currently relevant tables; This usually means either today's table or that of the next school day,
+	 * plus an arbitrary number of tables in the future.
+	 * 
+	 * @param num how many tables to get. The default is two.
+	 */
+	public getCurrentTables(num: number = 2) : Promise<TimeTable[]> {
+		return this.requestTables(new Date(), num);
+	}
+
+	private async requestTables(day: Date, num: number): Promise<TimeTable[]> {
+		const response = await this.webUntis.getSubstitution(
+			this.formatName, 
+			this.schoolName, 
+			day,
+			num
+		);
 		if(response.hasError) throw response.error;
-		const data = response.payload;
-		let plan;
-		try {
-			plan = _GylohWebUntis.parseDayPlan(data);
-		} catch(e) {
-			throw new GylohWebUntisParsingError(e);
+		let tables: TimeTable[] = [];
+		for(let payload of response.payloads) {
+			let table;
+			try {
+				table = this.parseTimeTable(payload);
+			} catch(e) {
+				throw new GylohWebUntisParsingError(e);
+			}
+			tables.push(table);
 		}
-		if(plan.date.toDateString() != day.toDateString()) 
-			throw new GylohWebUntisPlanNotFoundError(day);
-		return plan;
+		return tables;
 	}
 
-	/**
-	 * Gets today's `SubstitutionPlan` object asynchronously.
-	 */
-	public getTodaysPlan(): Promise<SubstitutionPlan> {
-		return this.getPlan(Date.now());
-	}
-
-	/**
-	 * Gets tomorrows `SubstitutionPlan` object asynchronously.
-	 */
-	public getTomorrowsPlan(): Promise<SubstitutionPlan> {
-		return this.getPlan(Date.now() + 86400000);
-	}
-
-	private static parseText(str: string): string {
+	private parseText(str: string): string {
 		return he.decode(str);
 	}
 
-	private static parseDate(dateStr: string): Date {
+	private parseDate(dateStr: string): Date {
 		dateStr = this.parseText(dateStr);
 		const isoStr = [dateStr.substr(0, 4), dateStr.substr(4, 2), dateStr.substr(6, 2)].join("-");
 		return new Date(Date.parse(isoStr));
 	}
 
-	private static parseMessage(data: any): Message {
+	private parseMessage(data: any): Message {
 		return new Message(this.parseText(data.subject), this.parseText(data.body));
 	}
 
-	// private static readonly substitutionRegex = /^<span class="substMonitorSubstElem">(.+)<\/span> \(<span class="cancelStyle">(.+)<\/span>\)$/
-	private static readonly substitutionRegex = /^<span class="substMonitorSubstElem">(.+)<\/span> \((.+)\)$/
+	private readonly substitutionRegex = /^<span class="substMonitorSubstElem">(.+)<\/span> \((.+)\)$/
 
-	private static isSubstitution(str: string) {
+	private isSubstitution(str: string) {
 		return this.substitutionRegex.test(str);
 	}
 
-	private static splitSubstitution(str: string): Substitution<string> {
+	private splitSubstitution(str: string): Substitution<string> {
 		const res = this.substitutionRegex.exec(str);
 		if(res == null) return {current: str};
 		return {
@@ -113,7 +106,7 @@ class _GylohWebUntis {
 		}
 	}
 
-	private static parseRooms(str: string): (Room | Substitution<Room>)[] {
+	private parseRooms(str: string): (Room | Substitution<Room>)[] {
 		const roomStrs = this.parseText(str).split(", ");
 		const rooms = roomStrs.map(str => {
 			if(!this.isSubstitution(str)) return new Room(str);
@@ -127,20 +120,20 @@ class _GylohWebUntis {
 		return rooms;
 	}
 
-	private static parseTeacher(str: string): (string | Substitution<string>) {
+	private parseTeacher(str: string): (string | Substitution<string>) {
 		if(!this.isSubstitution(str)) return str;
 		return this.splitSubstitution(str);
 	}
 
-	private static parseSubject(str: string): Subject {
+	private parseSubject(str: string): Subject {
 		return new Subject(this.parseText(str));
 	}
 
-	private static parseEntry(row: any): Entry {
+	private parseEntry(row: any): Entry {
 		return new Entry({
 			lesson: this.parseText(row.data[0]),
 			time: this.parseText(row.data[1]),
-			groups: this.parseGroups(row.data[2].split(", ")),
+			classes: this.parseClasses(row.data[2].split(", ")),
 			subject: this.parseSubject(row.data[3]),
 			rooms: this.parseRooms(row.data[4]),
 			teacher: this.parseTeacher(row.data[5]),
@@ -149,7 +142,7 @@ class _GylohWebUntis {
 		});
 	}
 
-	private static parseEntries(rows: any[]) {
+	private parseEntries(rows: any[]) {
 		const entries = rows.map(r => this.parseEntry(r));
 		const uniqueEntries: Entry[] = [];
 		entries.forEach(e => {
@@ -158,19 +151,19 @@ class _GylohWebUntis {
 		return uniqueEntries;
 	}
 
-	private static parseGroups(gStrings: string[]) {
-		return gStrings.map(g => new Group(this.parseText(g)));
+	private parseClasses(gStrings: string[]) {
+		return gStrings.map(g => new Class(this.parseText(g)));
 	}
 
-	private static parseMessages(msgStrings: any[]) {
+	private parseMessages(msgStrings: any[]) {
 		return msgStrings.map(m => this.parseMessage(m));
 	}
 
-	private static parseDayPlan(data: any): SubstitutionPlan {
-		return new SubstitutionPlan({
+	private parseTimeTable(data: any): TimeTable {
+		return new TimeTable({
 			date: this.parseDate(data.date.toString()),
 			lastUpdate: this.parseText(data.lastUpdate),
-			affectedGroups: this.parseGroups(data.affectedElements["1"]),
+			affectedClasses: this.parseClasses(data.affectedElements["1"]),
 			messages: this.parseMessages(data.messageData.messages),
 			entries: this.parseEntries(data.rows)
 		});
@@ -186,5 +179,4 @@ const GylohWebUntis = new _GylohWebUntis();
 export {
 	GylohWebUntis,
 	GylohWebUntisParsingError,
-	GylohWebUntisPlanNotFoundError
 }

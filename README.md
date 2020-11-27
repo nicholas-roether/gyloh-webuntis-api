@@ -4,39 +4,36 @@ This API let's you access the WebUntis data (substitutions, cancellations, and t
 It's honestly so specific that I don't even know why I'm writing this readme in english.
 
 
-## Getting Plans
+## Getting Tables
 
-Getting plan objects (`SubstitutionPlan`) is done via one of three methods:
-- `GylohWebUntis.getTodaysPlan()`
-- `GylohWebUntis.getTomorrowsPlan()`
-- `GylohWebUntis.getPlan(date)`, where date is a `Date` object or a timestamp corresponding to an arbitrary day for which to get the plan.
-
-Please note that while the latter function can be called for any arbitrary day, there is no guarantee that a plan actually exists for that day. If it doesn't, a `GylohWebUntisPlanNotFoundError` will be throw.
+Getting `TimeTable`s is done via one of two methods:
+- `GylohWebUntis.getCurrentTables(num)`, which gets currently relevant tables, starting either today or on the next day of school, and getting `num` tables in total. The default for `num` is 2.
+- `GylohWebUntis.getTable(day)`, which gets a table for an arbitrary `day`, which is either a `Date` object or a timestamp. It will return `null` if no table is available for that day.
 
 ```js
 const { GylohWebUntis } = require("gyloh-webuntis-api");
 
 // I'll be using async/await for readability; obviously this code would need to be inside an asynchronous function
 
-const todaysPlan = await GylohWebUntis.getTodaysPlan();
-const tomorrowsPlan = await GylohWebUntis.getTomorrowsPlan();
+// Get three currently relevant tables.
+const currentTables = await GylohWebUntis.getCurrentTables(3);
 
-// Getting the plan for the 9th of june 2018 (if it exists)
-const arbitraryPlan = await GylohWebUntis.getPlan(Date.parse("2018-06-09"));
+// Getting the tables for the 9th of june 2018 (if it exists)
+const arbitraryTable = await GylohWebUntis.getTable(Date.parse("2018-06-09"));
 ```
 
 ## Extracting Information
 
-### The SbustitutionPlan Object
+### The TimeTable Object
 
-The plan object contains all the information about the given day that this API provides. While it is probably best to explore all of it's and it's decendants' fields in on one's own using the IDE, I will outline some of the most useful things here.
+The `TimeTable` object contains all the information about the given day that this API provides. While it is probably best to explore all of it's and it's decendants' fields in on one's own using the IDE, I will outline some of the most useful things here.
 
 ```js
-const plan = await GylohWebUntis.getTodaysPlan();
+const table = (await GylohWebUntis.getCurrentTables(1))[0];
 
-plan.entries; // All the entries in this plan
-plan.affectedGroups; // for which groups of students this plan carries entries
-plan.messages; // Messages concerning all students for this day
+table.entries; // All the entries in this table
+table.affectedClasses; // for which classes or profiles this table carries entries
+table.messages; // Messages concerning all students for this day
 ```
 
 ### The Entry Object
@@ -44,10 +41,10 @@ plan.messages; // Messages concerning all students for this day
 Entries represent one change (cancellation, substitution, ...) that takes place on a certain day.
 
 ```js
-const entry = plan.entries[0];
+const entry = table.entries[0];
 
 entry.lesson; // A string showing which lesson this entry affects (example: "2 - 3")
-entry.groups; // An array of groups that this entry affects
+entry.classes; // An array of classes that this entry affects
 entry.subject; // The subject that is (or is normally) being taught during these lessons
 entry.rooms; // In which rooms these lessons occur. Usually just one unless the class or course is split up
 entry.info; // A short info text about the nature of this entry
