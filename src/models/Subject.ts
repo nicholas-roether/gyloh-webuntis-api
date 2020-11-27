@@ -40,7 +40,7 @@ class Subject {
 		const subjectName = this.subjectNames[res[1]];
 		const courseTypeKey = res[2];
 		const courseNumber = res[3];
-		return `${subjectName}${courseTypeKey ? " " + this.courseTypes[courseTypeKey] + " " : ""}${courseNumber ? courseNumber : ""}`;
+		return `${subjectName + (courseTypeKey || courseNumber) ? " " : ""}${courseTypeKey ? this.courseTypes[courseTypeKey] : ""}${courseNumber ? courseNumber : ""}`;
 	}
 
 	/**
