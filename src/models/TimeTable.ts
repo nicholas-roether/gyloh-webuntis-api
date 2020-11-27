@@ -2,7 +2,7 @@ import { Entry } from "./Entry";
 import { Class } from "./Class";
 import { Message } from "./Message";
 
-type TimeTableInit = {
+export type TimeTableInit = {
 	date: Date;
 	lastUpdate: string;
 	affectedClasses: Class[];

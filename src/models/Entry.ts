@@ -6,7 +6,7 @@ import { Substitution } from "./Substitution";
 /**
  * An object containing initialization properties for an `Entry` object.
  */
-type EntryInit = {
+export type EntryInit = {
 	lesson: string;
 	time: string;
 	classes: Class[];
