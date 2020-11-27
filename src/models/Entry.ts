@@ -12,9 +12,7 @@ export type EntryInit = {
 	classes: Class[];
 	subject: Subject;
 	rooms: (Room | Substitution<Room>)[];
-	substRoom?: Room;
 	teacher: string | Substitution<string>;
-	substTeacher?: string;
 	info: string;
 	message: string;
 };
