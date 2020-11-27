@@ -1,25 +1,12 @@
-import { GylohWebUntis, GylohWebUntisParsingError } from "./api/gyloh_web_untis";
-import { WebUntisCommunicationError, WebUntisError } from "./api/webuntis";
-import { Entry, EntryInit } from "./models/Entry";
-import { Class } from "./models/Class";
-import { Message } from "./models/Message";
-import { Room } from "./models/Room";
-import { Subject } from "./models/Subject";
-import { Substitution } from "./models/Substitution";
-import { TimeTable, TimeTableInit } from "./models/TimeTable";
+export { GylohWebUntis, GylohWebUntisParsingError } from "./api/gyloh_web_untis";
+export { WebUntisCommunicationError, WebUntisError } from "./api/webuntis";
+export { Entry } from "./models/Entry";
+export { Class } from "./models/Class";
+export { Message } from "./models/Message";
+export { Room } from "./models/Room";
+export { Subject } from "./models/Subject";
+export { Substitution } from "./models/Substitution";
+export { TimeTable } from "./models/TimeTable";
 
-export {
-	GylohWebUntis,
-	Entry,
-	EntryInit,
-	Class,
-	Message,
-	Room,
-	Subject,
-	Substitution,
-	TimeTable,
-	TimeTableInit,
-	WebUntisError,
-	WebUntisCommunicationError,
-	GylohWebUntisParsingError
-}
+export type { TimeTableInit } from "./models/TimeTable"
+export type { EntryInit } from "./models/Entry";
