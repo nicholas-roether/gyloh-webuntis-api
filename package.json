@@ -1,6 +1,6 @@
 {
   "name": "gyloh-webuntis-api",
-  "version": "1.2.11",
+  "version": "1.2.12",
   "description": "A NodeJS wrapper around the inofficial (?) WebUntis API on stundenplan.hamburg.net, currently specifically for the Gymnasium Lohbrügge, but can probably be adapted for others as well",
   "main": "dist/index.js",
   "files": [
