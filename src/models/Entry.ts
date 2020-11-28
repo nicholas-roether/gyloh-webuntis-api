@@ -85,15 +85,6 @@ class Entry {
 		this.info = init.info;
 		this.message = init.message;
 	}
-
-	/**
-	 * Checks if this entry affects a given class.
-	 * 
-	 * @param classToCheck the class to check.
-	 */
-	public affects(classToCheck: Class): boolean {
-		return this.classes.includes(classToCheck);
-	}
 }
 
 export {

@@ -46,25 +46,6 @@ class TimeTable {
 		this.messages = init.messages;
 		this.entries = init.entries;
 	}
-
-	/**
-	 * Checks if a given class is affected by this table.
-	 * 
-	 * @param classToCheck the class to check.
-	 */
-	public isAffected(classToCheck: Class): boolean {
-		return this.affectedClasses.includes(classToCheck);
-	}
-
-	/**
-	 * Gets all entries in this table that affect a given class.
-	 * 
-	 * @param schoolClass the class for which to provide entries.
-	 */
-	public entriesFor(schoolClass: Class): Entry[] {
-		if(!this.isAffected(schoolClass)) return [];
-		return this.entries.filter(e => e.affects(schoolClass));
-	}
 }
 
 export {
