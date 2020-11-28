@@ -12,7 +12,7 @@
     "start": "node dist/index.js",
     "prepublish": "tsc && git push"
   },
-  "repository": "git+https://github.com/nicholas-roether/node-hamburg-webuntis-api.git",
+  "repository": "git+https://github.com/nicholas-roether/gyloh-webuntis-api.git",
   "keywords": [
     "hamburg",
     "stundenplan",
@@ -25,9 +25,9 @@
   "author": "Nicholas Roether",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nicholas-roether/node-hamburg-webuntis-api/issues"
+    "url": "https://github.com/nicholas-roether/gyloh-webuntis-api/issues"
   },
-  "homepage": "https://github.com/nicholas-roether/node-hamburg-webuntis-api#readme",
+  "homepage": "https://github.com/nicholas-roether/gyloh-webuntis-api#readme",
   "private": false,
   "dependencies": {
     "axios": "^0.21.0",
