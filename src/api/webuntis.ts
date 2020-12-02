@@ -92,6 +92,41 @@ class WebUntis {
 		});
 	}
 
+	public async getTablesMinimal(
+		formatName: string,
+		schoolName: string,
+		date: Date,
+		num: number = 1
+	): Promise<WebUntisResponse> {
+		let error: Error | null = null;
+		let payloads: any[] = [];
+		let reqDate = this.formatDate(date);
+		for(; num > 0; num--) {
+			const response = await this.untisRequest("substitution/data", schoolName, {
+				schoolName,
+				formatName,
+				date: reqDate,
+				groupBy: 1,
+				hideAbsent: true,
+				departmentIds: [],
+				departmentElementType: -1,
+				hideCalcelWithSubstitution: true,
+				showAbsentElements: [],
+				showAffectedElements: []
+			});
+			if(response.hasError) {
+				error = response.error;
+				break;
+			}
+			if(!response.hasData) break;
+			const payload = response.payloads[0] as any;
+			payloads.push(payload);
+			if(payload.nextDate === null) break;
+			reqDate = payload.nextDate;
+		}
+		return new WebUntisResponse(payloads, error);
+	}
+
 	public async getSubstitution(
 		formatName: string,
 		schoolName: string,
@@ -106,7 +141,6 @@ class WebUntis {
 				schoolName,
 				formatName,
 				date: reqDate,
-				mergeBlocks: true,
 				showTeacher: true,
 				showClass: true,
 				showHour: true,

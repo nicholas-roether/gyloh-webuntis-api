@@ -9,7 +9,7 @@ import { Substitution } from "./Substitution";
 export type EntryInit = {
 	lesson: string;
 	time: string;
-	classes: Class[];
+	class: Class;
 	subject: Subject;
 	rooms: (Room | Substitution<Room>)[];
 	teacher: string | Substitution<string>;
@@ -37,9 +37,9 @@ class Entry {
 	 */
 	public readonly time: string;
 	/**
-	 * The classes (or profiles) that this entry affects
+	 * The class (or profile) that this entry affects
 	 */
-	public readonly classes: Class[];
+	public readonly class: Class;
 	/**
 	 * Which subject is (or is normally) being taught during the lessons that this entry affects
 	 */
@@ -78,7 +78,7 @@ class Entry {
 	constructor(init: EntryInit) {
 		this.lesson = init.lesson;
 		this.time = init.time;
-		this.classes = init.classes;
+		this.class = init.class;
 		this.subject = init.subject;
 		this.rooms = init.rooms;
 		this.teacher = init.teacher;

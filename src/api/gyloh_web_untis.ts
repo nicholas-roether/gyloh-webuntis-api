@@ -45,6 +45,29 @@ class _GylohWebUntis {
 		if(table.date.toDateString() != day.toDateString()) return null;
 		return table;
 	}
+	
+	/**
+	 * Gets the dates for the currently relevant tables without retrieving table data.
+	 * Useful if you only want to know the dates for which tables exist to get them later,
+	 * with less overhead.
+	 * 
+	 * @param num how many dates to get. The default is two.
+	 */
+	public async getCurrentDates(num: number = 2) : Promise<Date[]> {
+		const response = await this.webUntis.getTablesMinimal(this.formatName, this.schoolName, new Date(), num);
+		if(response.hasError) throw response.error;
+		let dates: Date[] = [];
+		for(let payload of response.payloads as any[]) {
+			let date = payload.date;
+			if(!date) throw new GylohWebUntisParsingError("No date was set");
+			try {
+				dates.push(this.parseDate(date))
+			} catch(e) {
+				throw new GylohWebUntisParsingError(e);
+			}
+		}
+		return dates;
+	}
 
 	/**
 	 * Gets the currently relevant tables; This usually means either today's table or that of the next school day,
@@ -133,7 +156,7 @@ class _GylohWebUntis {
 		return new Entry({
 			lesson: this.parseText(row.data[0]),
 			time: this.parseText(row.data[1]),
-			classes: this.parseClasses(row.data[2].split(", ")),
+			class: this.parseClass(row.data[2]),
 			subject: this.parseSubject(row.data[3]),
 			rooms: this.parseRooms(row.data[4]),
 			teacher: this.parseTeacher(row.data[5]),
@@ -151,8 +174,12 @@ class _GylohWebUntis {
 		return uniqueEntries;
 	}
 
+	private parseClass(gString: string) {
+		return new Class(this.parseText(gString));
+	}
+
 	private parseClasses(gStrings: string[]) {
-		return gStrings.map(g => new Class(this.parseText(g)));
+		return gStrings.map(g => this.parseClass(g));
 	}
 
 	private parseMessages(msgStrings: any[]) {
