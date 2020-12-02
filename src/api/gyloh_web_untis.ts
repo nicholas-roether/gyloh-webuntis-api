@@ -156,7 +156,7 @@ class _GylohWebUntis {
 		return new Entry({
 			lesson: this.parseText(row.data[0]),
 			time: this.parseText(row.data[1]),
-			class: this.parseClass(row.data[2]),
+			classes: this.parseClasses(row.data[2].split(", ")),
 			subject: this.parseSubject(row.data[3]),
 			rooms: this.parseRooms(row.data[4]),
 			teacher: this.parseTeacher(row.data[5]),
