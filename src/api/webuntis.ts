@@ -141,6 +141,7 @@ class WebUntis {
 				schoolName,
 				formatName,
 				date: reqDate,
+				mergeBlocks: false,
 				showTeacher: true,
 				showClass: true,
 				showHour: true,
