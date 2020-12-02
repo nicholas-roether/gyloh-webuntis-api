@@ -21,7 +21,11 @@ class Subject {
 		"Sem": "Seminar",
 		"PGW": "PGW",
 		"Re": "Religion",
-		"Ge": "Geschichte"
+		"Ge": "Geschichte",
+		"Bläserkl": "Bläserklasse",
+		"Kubi": "Kunst Bilingual",
+		"Thea": "Theater",
+		"Toefl": "Toefl"
 		// TODO add rest
 	}
 
@@ -31,7 +35,7 @@ class Subject {
 	}
 
 	private static get courseRegex() {
-		return new RegExp(`^(${Object.keys(this.subjectNames).join("|")})(${Object.keys(this.courseTypes).join("|")})?([0-9]+)?$`)
+		return new RegExp(`^(${Object.keys(this.subjectNames).join("|")})(${Object.keys(this.courseTypes).join("|")})?_?([0-9]+)?(A-Z)?$`)
 	}
 
 	private static parseSubject(name: string) {
@@ -40,7 +44,8 @@ class Subject {
 		const subjectName = this.subjectNames[res[1]];
 		const courseTypeKey = res[2];
 		const courseNumber = res[3];
-		return `${subjectName + ((courseTypeKey || courseNumber) ? " " : "")}${courseTypeKey ? this.courseTypes[courseTypeKey] : ""}${courseNumber ? courseNumber : ""}`;
+		const courseLetter = res[4];
+		return `${subjectName + ((courseTypeKey || courseNumber) ? " " : "")}${courseTypeKey ? this.courseTypes[courseTypeKey] : ""}${courseNumber || ""}${courseLetter || ""}`;
 	}
 
 	/**

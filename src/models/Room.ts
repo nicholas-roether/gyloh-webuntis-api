@@ -18,11 +18,13 @@ class Room {
 		"Info": "Computerraum",
 		"Ku": "Kunstraum",
 		"Rapp": "Rappelkiste",
+		"Mu": "Musikraum",
+		"208/209": "208/209"
 		// TODO complete
 	}
 
 	private static get roomParseRegex(): RegExp {
-		return new RegExp(`^(${Object.keys(this.buildingNames).join("|")})(${Object.keys(this.roomNames).join("|")})? ?([0-9]+)?$`)
+		return new RegExp(`^(${Object.keys(this.buildingNames).join("|")}) ?(${Object.keys(this.roomNames).join("|")})? ?([0-9]+)?(?:BR(0-9+))?$`)
 	}
 
 	private static parseRoom(id: string): string {
@@ -31,10 +33,11 @@ class Room {
 		const buildingId = res[1];
 		const roomId = res[2];
 		const roomNum = res[3];
+		const roomArea = res[4];
 		const building = this.buildingNames[buildingId];
 		const room = roomId ? this.roomNames[roomId] : this.roomNames[""];
 
-		return `${building ? building + " " : ""}${room}${roomNum ? " " + roomNum : ""}`;
+		return `${building ? building + " " : ""}${room}${roomNum ? " " + roomNum : ""}${roomArea ? " " + roomArea : ""}`;
 	}
 
 	/**
