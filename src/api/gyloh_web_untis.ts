@@ -105,7 +105,6 @@ class _GylohWebUntis {
 	}
 
 	private parseDate(dateStr: string): Date {
-		dateStr = this.parseText(dateStr);
 		const isoStr = [dateStr.substr(0, 4), dateStr.substr(4, 2), dateStr.substr(6, 2)].join("-");
 		return new Date(Date.parse(isoStr));
 	}
