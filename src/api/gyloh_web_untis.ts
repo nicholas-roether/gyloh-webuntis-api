@@ -61,7 +61,7 @@ class _GylohWebUntis {
 			let date = payload.date;
 			if(!date) throw new GylohWebUntisParsingError("No date was set");
 			try {
-				dates.push(this.parseDate(date))
+				dates.push(this.parseDate(`${date}`))
 			} catch(e) {
 				throw new GylohWebUntisParsingError(e);
 			}
