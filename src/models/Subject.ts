@@ -11,6 +11,7 @@ class Subject {
 		"Ma": "Mathe",
 		"Geo": "Geografie",
 		"Phy": "Physik",
+		"Ph": "Physik",
 		"Ku": "Kunst",
 		"Sp": "Sport",
 		"Sn": "Spanisch",
