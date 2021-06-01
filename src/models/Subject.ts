@@ -29,7 +29,8 @@ class Subject {
 		"Thea": "Theater",
 		"Toefl": "Toefl",
 		"Phil": "Philosophie",
-		"BasisK": "Basiskurs"
+		"BasisK": "Basiskurs",
+		"In": "Informatik"
 		// TODO add rest
 	}
 
