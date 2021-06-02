@@ -20,7 +20,8 @@ class Room {
 		"Rapp": "Rappelkiste",
 		"Mu": "Musikraum",
 		"208/209": "208/209",
-		"Büh": "Bühne"
+		"Büh": "Bühne",
+		"GW": "Geschichtswerkstatt"
 		// TODO complete
 	}
 
