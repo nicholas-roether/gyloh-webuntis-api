@@ -37,11 +37,12 @@ class _GylohWebUntis {
 	 * Returns null if none exists for that day, such as weekends or during holidays.
 	 * Might return empty tables when no entries have been made yet.
 	 * 
-	 * @param day The day of which to get the time table , in the form of a Date or a timestamp.
+	 * @param day The day of which to get the time table, in the form of a Date or a timestamp.
 	 */
 	public async getTable(day: Date | number): Promise<TimeTable | null> {
 		if(typeof day == "number") day = new Date(day);
 		const table = (await this.requestTables(day, 1))[0];
+		if(!table) return null;
 		if(table.date.toDateString() != day.toDateString()) return null;
 		return table;
 	}
@@ -73,13 +74,16 @@ class _GylohWebUntis {
 	 * Gets the currently relevant tables; This usually means either today's table or that of the next school day,
 	 * plus an arbitrary number of tables in the future.
 	 * 
+	 * While it should not do this, some of the tables in the returned array might be null. This would probably
+	 * be due to an error on the side of the webuntis server.
+	 * 
 	 * @param num how many tables to get. The default is two.
 	 */
-	public getCurrentTables(num: number = 2) : Promise<TimeTable[]> {
+	public getCurrentTables(num: number = 2) : Promise<(TimeTable | null)[]> {
 		return this.requestTables(new Date(), num);
 	}
 
-	private async requestTables(day: Date, num: number): Promise<TimeTable[]> {
+	private async requestTables(day: Date, num: number): Promise<(TimeTable | null)[]> {
 		const response = await this.webUntis.getSubstitution(
 			this.formatName, 
 			this.schoolName, 
@@ -87,7 +91,7 @@ class _GylohWebUntis {
 			num
 		);
 		if(response.hasError) throw response.error;
-		let tables: TimeTable[] = [];
+		let tables: (TimeTable | null)[] = [];
 		for(let payload of response.payloads) {
 			let table;
 			try {
@@ -185,7 +189,8 @@ class _GylohWebUntis {
 		return msgStrings.map(m => this.parseMessage(m));
 	}
 
-	private parseTimeTable(data: any): TimeTable {
+	private parseTimeTable(data: any): TimeTable | null {
+		if(!data.date) return null;
 		return new TimeTable({
 			date: this.parseDate(data.date.toString()),
 			lastUpdate: this.parseText(data.lastUpdate),
