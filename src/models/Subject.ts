@@ -30,7 +30,10 @@ class Subject {
 		"Toefl": "Toefl",
 		"Phil": "Philosophie",
 		"BasisK": "Basiskurs",
-		"In": "Informatik"
+		"In": "Informatik",
+		"Wind": "Gyloh Winds",
+		"BigB": "Bigband",
+		"Förder": "Förderung"
 		// TODO add rest
 	}
 
