@@ -33,7 +33,8 @@ class Subject {
 		"In": "Informatik",
 		"Wind": "Gyloh Winds",
 		"BigB": "Bigband",
-		"Förder": "Förderung"
+		"Förder": "Förderung",
+		"Osp": "Oberstufensport"
 		// TODO add rest
 	}
 
@@ -43,7 +44,7 @@ class Subject {
 	}
 
 	private static get courseRegex() {
-		return new RegExp(`^(${Object.keys(this.subjectNames).join("|")})(${Object.keys(this.courseTypes).join("|")})?_?([0-9]+)?P?$`)
+		return new RegExp(`^(${Object.keys(this.subjectNames).join("|")})(${Object.keys(this.courseTypes).join("|")}|(?:S[0-9]))?_?([0-9]+)?P?$`)
 	}
 
 	private static parseSubject(name: string) {
