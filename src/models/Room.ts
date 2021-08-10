@@ -5,7 +5,9 @@ class Room {
 	private static readonly buildingNames: {[key: string]: string} = {
 		"F": "Forum",
 		"L": "Lichthof",
-		"B": ""
+		"B": "",
+		"A": "",
+		"N": "",
 	}
 
 	private static readonly roomNames: {[key: string]: string} = {
