@@ -8,6 +8,7 @@ class Room {
 		"B": "",
 		"A": "",
 		"N": "",
+		"V": ""
 	}
 
 	private static readonly roomNames: {[key: string]: string} = {
