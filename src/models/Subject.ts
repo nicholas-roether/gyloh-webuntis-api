@@ -47,8 +47,16 @@ class Subject {
 		return new RegExp(`^(${Object.keys(this.subjectNames).join("|")})(${Object.keys(this.courseTypes).join("|")}|(?:S[0-9]))?_?([0-9]+)?P?$`)
 	}
 
+	private static get ospRegex() {
+		return new RegExp(`^Osp(?:S[0-9])?([A-Za-z0-9_-]*)$`);
+	}
+
 	private static parseSubject(name: string) {
-		const res = this.courseRegex.exec(name);
+		let res = this.ospRegex.exec(name);
+		if(res) {
+			return `Oberstufensport (${res[1]})`
+		}
+		res = this.courseRegex.exec(name);
 		if(!res) return name;
 		const subjectName = this.subjectNames[res[1]];
 		const courseTypeKey = res[2];
