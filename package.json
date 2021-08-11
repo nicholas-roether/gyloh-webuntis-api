@@ -28,7 +28,6 @@
     "url": "https://github.com/nicholas-roether/gyloh-webuntis-api/issues"
   },
   "homepage": "https://github.com/nicholas-roether/gyloh-webuntis-api#readme",
-  "private": false,
   "dependencies": {
     "axios": "^0.21.0",
     "he": "^1.2.0"
