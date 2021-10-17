@@ -38,7 +38,7 @@ class WebUntisResponse {
 }
 
 class WebUntis {
-	private static readonly API_BASE = "https://stundenplan.hamburg.de/WebUntis/monitor/";
+	private static readonly API_BASE = "https://ikarus.webuntis.com/WebUntis/monitor";
 
 	private parseResponse(data: any): WebUntisResponse {
 		let payload: any = null;
