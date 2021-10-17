@@ -38,7 +38,8 @@ class WebUntisResponse {
 }
 
 class WebUntis {
-	private static readonly API_BASE = "https://ikarus.webuntis.com/WebUntis/monitor";
+	private static readonly HOST = "ikarus.webuntis.com";
+	private static readonly API_BASE = `https://${WebUntis.HOST}/WebUntis/monitor`;
 
 	private parseResponse(data: any): WebUntisResponse {
 		let payload: any = null;
@@ -64,6 +65,7 @@ class WebUntis {
 				headers: {
 					"Content-Type": "application/json",
 					"Content-Length": `${json.length}`,
+					"Host": "ikarus.webuntis.com"
 				},
 			}
 		).then((res: any) => res.data).catch((e: any) => error = new WebUntisCommunicationError(e));
