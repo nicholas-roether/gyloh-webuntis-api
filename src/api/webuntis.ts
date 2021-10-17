@@ -39,7 +39,7 @@ class WebUntisResponse {
 
 class WebUntis {
 	private static readonly HOST = "ikarus.webuntis.com";
-	private static readonly API_BASE = `https://${WebUntis.HOST}/WebUntis/monitor`;
+	private static readonly API_BASE = `https://${WebUntis.HOST}/WebUntis/monitor/`;
 
 	private parseResponse(data: any): WebUntisResponse {
 		let payload: any = null;
