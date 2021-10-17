@@ -65,7 +65,7 @@ class WebUntis {
 				headers: {
 					"Content-Type": "application/json",
 					"Content-Length": `${json.length}`,
-					"Host": "ikarus.webuntis.com"
+					"Host": WebUntis.HOST
 				},
 			}
 		).then((res: any) => res.data).catch((e: any) => error = new WebUntisCommunicationError(e));
