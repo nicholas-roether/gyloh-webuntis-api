@@ -108,6 +108,12 @@ class _GylohWebUntis {
 		return he.decode(str);
 	}
 
+	private parseInfo(str: string): string {
+		const decoded = this.parseText(str);
+		if (decoded === "Text") return ""; // Stupid workaround because the people running this shit don't know what they're doing
+		return  decoded;
+	}
+
 	private parseDate(dateStr: string): Date {
 		const isoStr = [dateStr.substr(0, 4), dateStr.substr(4, 2), dateStr.substr(6, 2)].join("-");
 		return new Date(Date.parse(isoStr));
@@ -163,7 +169,7 @@ class _GylohWebUntis {
 			subject: this.parseSubject(row.data[3]),
 			rooms: this.parseRooms(row.data[4]),
 			teacher: this.parseTeacher(row.data[5]),
-			info: this.parseText(row.data[6]),
+			info: this.parseInfo(row.data[6]),
 			message: this.parseText(row.data[7])
 		});
 	}
