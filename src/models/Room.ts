@@ -8,13 +8,13 @@ class Room {
 		"B": "",
 		"A": "",
 		"N": "",
-		"V": ""
+		"V": "",
+		"Sp": "Sporthalle"
 	}
 
 	private static readonly roomNames: {[key: string]: string} = {
 		"": "",
 		"Geo": "Geografieraum",
-		"Sp": "Sporthalle",
 		"Chem": "Chemieraum",
 		"Phy": "Physikraum",
 		"Bio": "Biologieraum",

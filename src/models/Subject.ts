@@ -34,7 +34,7 @@ class Subject {
 		"Wind": "Gyloh Winds",
 		"BigB": "Bigband",
 		"Förder": "Förderung",
-		"Osp": "Oberstufensport"
+		"Osp": "Sport"
 		// TODO add rest
 	}
 
@@ -48,7 +48,7 @@ class Subject {
 	}
 
 	private static get ospRegex() {
-		return new RegExp(`^Osp(?:S[0-9])?([A-Za-z0-9_-]*)$`);
+		return new RegExp(`^Osp(?:S[0-9])?_?([A-Za-z0-9_-]*)$`);
 	}
 
 	private static parseSubject(name: string) {
